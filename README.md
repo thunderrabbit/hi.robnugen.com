@@ -29,3 +29,10 @@ necessary tables:
 
 Plan now to use migrate on it after creating the table with PHPMyAdmin
 
+Done via
+
+    bin/cake bake migration_snapshot users
+
+Okay now instead of all the above, we can just do this:
+
+    bin/cake migrations migrate
