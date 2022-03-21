@@ -1,4 +1,4 @@
-Vaporware for a simple CRM
+Registration page for a simple CRM
 
 Don't touch it until this README looks reasonable.
 
