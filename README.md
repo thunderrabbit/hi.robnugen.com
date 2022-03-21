@@ -50,3 +50,17 @@ Now start baking the code for tables:
 In order to hash passwords, we need to install Authentication Plugin
 
     composer require "cakephp/authentication:^2.0"
+
+
+Add this to the top of `src/Model/Entity/User.php`
+
+    use Authentication\PasswordHasher\DefaultPasswordHasher; // Required for passwords to work
+
+Then add this to the end of `src/Model/Entity/User.php`
+
+    protected function _setPassword(string $password) : ?string
+    {
+        if (strlen($password) > 0) {
+            return (new DefaultPasswordHasher())->hash($password);
+        }
+    }
