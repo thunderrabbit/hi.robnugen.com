@@ -11,14 +11,11 @@ Barefoot Rob
 CMS Tutorial - Creating the Database
 ####################################
 
-Now that we have CakePHP installed, let's set up the database for our :abbr:`CMS
-(Content Management System)` application. If you haven't already done so, create
-an empty database for use in this tutorial, with the name of your choice such as
-``cake_cms``.
+Now that we have CakePHP installed, let's set up the database for
+this Vaporware app code named 'hi'. If you haven't already done so, create
+an empty database for this.
 If you are using MySQL/MariaDB, you can execute the following SQL to create the
 necessary tables:
-
-.. code-block:: SQL
 
     USE cake_cms;
 
@@ -29,4 +26,6 @@ necessary tables:
         created DATETIME,
         modified DATETIME
     );
+
+Plan now to use migrate on it after creating the table with PHPMyAdmin
 
