@@ -36,3 +36,14 @@ Done via
 Okay now instead of all the above, we can just do this:
 
     bin/cake migrations migrate
+
+
+Now start baking the code for tables:
+
+    cd /path/to/our/app
+
+    # You can overwrite any existing files.
+    bin/cake bake model users
+    bin/cake bake controller users
+    bin/cake bake template users
+
