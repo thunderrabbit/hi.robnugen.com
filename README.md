@@ -47,3 +47,6 @@ Now start baking the code for tables:
     bin/cake bake controller users
     bin/cake bake template users
 
+In order to hash passwords, we need to install Authentication Plugin
+
+    composer require "cakephp/authentication:^2.0"
