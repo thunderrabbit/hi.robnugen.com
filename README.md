@@ -80,15 +80,14 @@ The Plugin will handle the authentication process using 3 different classes:
   we going to check the credentials, and where to find them.
 * ``AuthenticationService`` will be a utility class to allow you configure the
   authentication process.
-* ``AuthenticationMiddleware`` will be executed as part of the middleware queue,
-  this is before your Controllers are processed by the framework, and will pick the
+* ``AuthenticationMiddleware`` will be executed as part of the middleware queue.
+  This happens before your Controllers are processed by the framework, and will pick the
   credentials and process them to check if the user is authenticated.
 
-If you remember, we used :doc:`AuthComponent </controllers/components/authentication>`
-before to handle all these steps. Now the logic is divided into specific classes and
+This logic is divided into specific classes and
 the authentication process happens before your controller layer. First it checks if the user
 is authenticated (based on the configuration you provided) and injects the user and
-the authentication results into the request for further reference.
+corresponding authentication results into the request for further reference.
 
 In **src/Application.php**, add the following imports::
 
