@@ -44,6 +44,19 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
 
+	/*
+	   With this line
+	   `$this->loadComponent('Authentication.Authentication');`, on
+	   every request, the ``AuthenticationMiddleware`` will
+	   inspect the request session to look for an authenticated
+	   user. If we are loading the ``/users/login`` page, it will
+	   also inspect the posted form data (if any) to extract the
+	   credentials.  By default the credentials will be extracted
+	   from the ``username`` and ``password`` fields in the
+	   request data.
+        */
+        $this->loadComponent('Authentication.Authentication');  // Check authentication result and lock your site
+
         /*
          * Enable the following component for recommended CakePHP form protection settings.
          * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
