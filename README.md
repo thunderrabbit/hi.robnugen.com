@@ -373,3 +373,115 @@ Now bake the code for main new tables:
 
 So far it looks like we don't have to bake `contacts_methods`
 because CakePHP's `JOIN` magic sorts them out.
+
+### Adding Tagging to Articles
+
+With multiple users able to access our small :abbr:`CMS` it would be nice to
+have a way to categorize our content. We'll use tags and tagging to allow users
+to create free-form categories and labels for their content. Again, we'll use
+``bake`` to quickly generate some skeleton code for our application:
+
+.. code-block:: console
+
+    # Generate all the code at once.
+    bin/cake bake all tags
+
+Once you have the scaffold code created, create a few sample tags by going to
+**http://localhost:8765/tags/add**.
+
+Now that we have a Tags table, we can create an association between Articles and
+Tags. We can do so by adding the following to the ``initialize`` method on the
+``ArticlesTable``::
+
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp');
+        $this->belongsToMany('Tags'); // Add this line
+    }
+
+This association will work with this simple definition because we followed
+CakePHP conventions when creating our tables. For more information, read
+:doc:`/orm/associations`.
+
+Updating Articles to Enable Tagging
+===================================
+
+Now that our application has tags, we need to enable users to tag their
+articles. First, update the ``add`` action to look like::
+
+    <?php
+    // in src/Controller/ArticlesController.php
+    namespace App\Controller;
+
+    use App\Controller\AppController;
+
+    class ArticlesController extends AppController
+    {
+        public function add()
+        {
+            $article = $this->Articles->newEmptyEntity();
+            if ($this->request->is('post')) {
+                $article = $this->Articles->patchEntity($article, $this->request->getData());
+
+                // Hardcoding the user_id is temporary, and will be removed later
+                // when we build authentication out.
+                $article->user_id = 1;
+
+                if ($this->Articles->save($article)) {
+                    $this->Flash->success(__('Your article has been saved.'));
+                    return $this->redirect(['action' => 'index']);
+                }
+                $this->Flash->error(__('Unable to add your article.'));
+            }
+            // Get a list of tags.
+            $tags = $this->Articles->Tags->find('list')->all();
+
+            // Set tags to the view context
+            $this->set('tags', $tags);
+
+            $this->set('article', $article);
+        }
+
+        // Other actions
+    }
+
+The added lines load a list of tags as an associative array of ``id => title``.
+This format will let us create a new tag input in our template.
+Add the following to the PHP block of controls in **templates/Articles/add.php**::
+
+    echo $this->Form->control('tags._ids', ['options' => $tags]);
+
+This will render a multiple select element that uses the ``$tags`` variable to
+generate the select box options. You should now create a couple new articles
+that have tags, as in the following section we'll be adding the ability to find
+articles by tags.
+
+You should also update the ``edit`` method to allow adding or editing tags. The
+edit method should now look like::
+
+    public function edit($slug)
+    {
+        $article = $this->Articles
+            ->findBySlug($slug)
+            ->contain('Tags') // load associated Tags
+            ->firstOrFail();
+        if ($this->request->is(['post', 'put'])) {
+            $this->Articles->patchEntity($article, $this->request->getData());
+            if ($this->Articles->save($article)) {
+                $this->Flash->success(__('Your article has been updated.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('Unable to update your article.'));
+        }
+
+        // Get a list of tags.
+        $tags = $this->Articles->Tags->find('list')->all();
+
+        // Set tags to the view context
+        $this->set('tags', $tags);
+
+        $this->set('article', $article);
+    }
+
+Remember to add the new tags multiple select control we added to the **add.php**
+template to the **templates/Articles/edit.php** template as well.
