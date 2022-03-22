@@ -290,3 +290,52 @@ can complete on your own.
 
 Now that users can log in, we'll want to limit users to only edit articles that
 they created by :doc:`applying authorization policies <./authorization>`.
+
+### Create remaining tables
+
+Now that
+
+* users must be logged in to see anything AND
+* I have disabled new registrations
+
+I am comfortable with adding other data to the system.
+
+We have just two more tables and a linking table.
+
+* TABLE `contacts` will be who we want to stay in touch with.
+* TABLE `methods` will be a list of ways we can stay in touch with contacts.
+* TABLE `contacts_methods` will be a linking table for them.
+
+From the tutorial I'm using
+
+* TABLE `articles` corresponds to TABLE `contacts`
+* TABLE `tags` corresponds to TABLE `methods`
+* TABLE `articles_tags` corresponds to TABLE `contacts_methods`
+
+    CREATE TABLE contacts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        sufficient_contact VARCHAR(255) NOT NULL,
+        last_contact DATE,
+        days_interval INT NOT NULL,
+        created DATETIME,
+        modified DATETIME,
+        FOREIGN KEY user_key (user_id) REFERENCES users(id)
+    ) CHARSET=utf8mb4;
+
+    CREATE TABLE methods (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        method VARCHAR(191),
+        created DATETIME,
+        modified DATETIME,
+        UNIQUE KEY (method)
+    ) CHARSET=utf8mb4;
+
+    CREATE TABLE contacts_methods (
+        contact_id INT NOT NULL,
+        method_id INT NOT NULL,
+        PRIMARY KEY (contact_id, method_id),
+        FOREIGN KEY method_key(method_id) REFERENCES methods(id),
+        FOREIGN KEY contact_key(contact_id) REFERENCES contacts(id)
+    );
