@@ -55,7 +55,6 @@ Okay now instead of all the above, we can just do this:
 
     bin/cake migrations migrate
 
-
 Now start baking the code for tables:
 
     cd /path/to/our/app
@@ -331,6 +330,7 @@ From the tutorial I'm using
 * TABLE `tags` corresponds to TABLE `methods`
 * TABLE `articles_tags` corresponds to TABLE `contacts_methods`
 
+Here are the tables
 
     CREATE TABLE contacts (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -343,7 +343,7 @@ From the tutorial I'm using
         modified DATETIME,
         FOREIGN KEY user_key (user_id) REFERENCES users(id)
     ) CHARSET=utf8mb4;
-
+    
     CREATE TABLE methods (
         id INT AUTO_INCREMENT PRIMARY KEY,
         method VARCHAR(191),
@@ -351,7 +351,7 @@ From the tutorial I'm using
         modified DATETIME,
         UNIQUE KEY (method)
     ) CHARSET=utf8mb4;
-
+    
     CREATE TABLE contacts_methods (
         contact_id INT NOT NULL,
         method_id INT NOT NULL,
@@ -360,6 +360,9 @@ From the tutorial I'm using
         FOREIGN KEY contact_key(contact_id) REFERENCES contacts(id)
     );
 
+Above is already done if you did this at the top:
+
+    bin/cake migrations migrate
 
 Now bake the code for main new tables:
 
