@@ -49,6 +49,20 @@ class UsersController extends AppController
         }
     }
 
+    /**
+     * Allow us to log out
+     *
+     * @return \Cake\Http\Response|null|void Renders view   (I GUESS)
+     */
+    public function logout()
+    {
+        $result = $this->Authentication->getResult();
+        // regardless of POST or GET, redirect if user is logged in
+        if ($result->isValid()) {
+            $this->Authentication->logout();
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+    }
 
     /**
      * Index method
