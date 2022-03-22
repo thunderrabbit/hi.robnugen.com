@@ -1,4 +1,4 @@
-Registration page for a simple CRM
+Authentication for a simple CRM
 
 Don't touch it until this README looks reasonable.
 
@@ -11,7 +11,7 @@ Barefoot Rob
 ### Creating the Database
 
 Now that we have CakePHP installed, let's set up the database for
-this Vaporware app code named 'hi'. If you haven't already done so, create
+this simplistic app code named 'hi'. If you haven't already done so, create
 an empty database for this.
 If you are using MySQL/MariaDB, you can execute the following SQL to create the
 necessary tables:
