@@ -444,13 +444,9 @@ methods to their contacts. First, update the `add` action to look like:
 
 The added lines load a list of methods as an associative array of `id
 => title`.  This format will let us create a new method input in our
-template.  Add the following to the PHP block of controls in
-**templates/Contacts/add.php**:
+template.
 
-    echo $this->Form->control('methods._ids', ['options' => $methods]);
-
-This will render a multiple select element that uses the `$methods`
-variable to generate the select box options. You should now create a
+You should now create a
 couple new contacts that have methods, as in the following section
 we'll be adding the ability to find contacts by methods.
 

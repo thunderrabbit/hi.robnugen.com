@@ -24,7 +24,7 @@
                     echo $this->Form->control('sufficient_contact');
                     echo $this->Form->control('last_contact', ['empty' => true]);
                     echo $this->Form->control('days_interval');
-                    echo $this->Form->control('methods._ids', ['options' => $methods]);
+                    echo $this->Form->control('methods._ids', ['options' => $methods]);  // render a multiple select element that uses the `$methods`
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>
