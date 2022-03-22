@@ -450,33 +450,3 @@ If you haven't already, now create a
 couple new contacts that have methods, as in the following section
 we'll be adding the ability to find contacts by methods.
 
-You should also update the `edit` method (function) to allow adding or editing
-(contact) methods. The edit method (function) should now look like:
-
-    public function edit($slug)
-    {
-        $contact = $this->Contacts
-            ->findBySlug($slug)
-            ->contain('Methods') // load associated methods
-            ->firstOrFail();
-        if ($this->request->is(['post', 'put'])) {
-            $this->Contacts->patchEntity($contact, $this->request->getData());
-            if ($this->Contacts->save($contact)) {
-                $this->Flash->success(__('Your contact has been updated.'));
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('Unable to update your contact.'));
-        }
-
-        // Get a list of methods.
-        $methods = $this->Contacts->Methods->find('list')->all();
-
-        // Set methods to the view context
-        $this->set('methods', $methods);
-
-        $this->set('contact', $contact);
-    }
-
-Remember to add the new methods multiple select control we added to
-the **add.php** template to the **templates/Contacts/edit.php**
-template as well.
