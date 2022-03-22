@@ -1,11 +1,30 @@
-Authentication for a simple CRM
+Contacts and Methods for a simple CRM
 
 Don't touch it until this README looks reasonable.
+
+
+###Overview
+
+Does not track the content of communication
+
+The content is saved within the communication medium, meaning the specific social network or email etc.
+
+Only remembers the upcoming timing of communication
+
+Does not even recall the history of communications
+
+* no private data!  data could be doxxed and must have no ill effect on anyone
+* NO LAST NAMES
+* NO CONTACT INFO beyond "FB" "LINE" "Whatsapp"
+** and I do mean just the name of the social network
+** not the username or anything
+* if I cannot find them from above, then they aren't close enough to be contacted
+* private info stays safely in my physical space or with 3rd party social network
 
 Plans are here for now https://workflowy.com/s/hirobnugencom-crm-so/Y66vVLqCV7GOTH2j
 
 Barefoot Rob
-18 March 2022
+22 March 2022
 
 
 ### Creating the Database
