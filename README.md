@@ -450,3 +450,184 @@ If you haven't already, now create a
 couple new contacts that have methods, as in the following section
 we'll be adding the ability to find contacts by methods.
 
+---------------------------------------------------
+
+### Improving the method for adding Methods
+
+Right now, adding new methods is a cumbersome process, as authors need to
+pre-create all the methods they want to use. We can improve the method selection UI by
+using a comma separated text field. This will let us give a better experience to
+our users, and use some more great features in the ORM.
+
+#### Adding a Computed Field
+
+
+Because we'll want a simple way to access the formatted methods for an entity, we
+can add a virtual/computed field to the entity. In
+**src/Model/Entity/Contact.php** add the following::
+
+    // add this use statement right below the namespace declaration to import
+    // the Collection class
+    use Cake\Collection\Collection;
+
+    // Update the accessible property to contain `method_string`
+    protected $_accessible = [
+        //other fields...
+        'method_string' => true
+    ];
+
+    protected function _getMethodString()
+    {
+        if (isset($this->_fields['method_string'])) {
+            return $this->_fields['method_string'];
+        }
+        if (empty($this->methods)) {
+            return '';
+        }
+        $methods = new Collection($this->methods);
+        $str = $methods->reduce(function ($string, $method) {
+            return $string . $method->title . ', ';
+        }, '');
+        return trim($str, ', ');
+    }
+
+This will let us access the ``$contact->method_string`` computed property. We'll
+use this property in controls later on.
+
+#### Updating the Views
+
+With the entity updated we can add a new control for our methods. In
+**templates/Contacts/add.php** and **templates/Contacts/edit.php**,
+replace the existing ``methods._ids`` control with the following::
+
+    echo $this->Form->control('method_string', ['type' => 'text']);
+
+We'll also need to update the contact view template. In
+**templates/Contacts/view.php** add the line as shown::
+
+    <!-- File: templates/Contacts/view.php -->
+
+    <h1><?= h($contact->title) ?></h1>
+    <p><?= h($contact->body) ?></p>
+    // Add the following line
+    <p><b>Methods:</b> <?= h($contact->method_string) ?></p>
+
+You should also update the view method to allow retrieving existing methods::
+
+    // src/Controller/ContactsController.php file
+
+    public function view($slug = null)
+    {
+       // Update retrieving methods with contain()
+       $contact = $this->Contacts
+            ->findBySlug($slug)
+            ->contain('Methods')
+            ->firstOrFail();
+        $this->set(compact('contact'));
+    }
+
+#### Persisting the Method String
+
+Now that we can view existing methods as a string, we'll want to save that data as
+well. Because we marked the ``method_string`` as accessible, the ORM will copy that
+data from the request into our entity. We can use a ``beforeSave()`` hook method
+to parse the method string and find/build the related entities. Add the following
+to **src/Model/Table/ContactsTable.php**::
+
+    public function beforeSave(EventInterface $event, $entity, $options)
+    {
+        if ($entity->method_string) {
+            $entity->methods = $this->_buildMethods($entity->method_string);
+        }
+
+        // Other code
+    }
+
+    protected function _buildMethods($methodString)
+    {
+        // Trim methods
+        $newMethods = array_map('trim', explode(',', $methodString));
+        // Remove all empty methods
+        $newMethods = array_filter($newMethods);
+        // Reduce duplicated methods
+        $newMethods = array_unique($newMethods);
+
+        $out = [];
+        $methods = $this->Methods->find()
+            ->where(['Methods.title IN' => $newMethods])
+            ->all();
+
+        // Remove existing methods from the list of new methods.
+        foreach ($methods->extract('title') as $existing) {
+            $index = array_search($existing, $newMethods);
+            if ($index !== false) {
+                unset($newMethods[$index]);
+            }
+        }
+        // Add existing methods.
+        foreach ($methods as $method) {
+            $out[] = $method;
+        }
+        // Add new methods.
+        foreach ($newMethods as $method) {
+            $out[] = $this->Methods->newEntity(['title' => $method]);
+        }
+        return $out;
+    }
+
+If you now create or edit contacts, you should be able to save methods as a comma
+separated list of methods, and have the methods and linking records automatically
+created.
+
+While this code is a bit more complicated than what we've done so far, it helps
+to showcase how powerful the ORM in CakePHP is. You can manipulate query
+results using the :doc:`/core-libraries/collections` methods, and handle
+scenarios where you are creating entities on the fly with ease.
+
+### Auto-populating the Method String
+
+Before we finish up, we'll need a mechanism that will load the associated methods
+(if any) whenever we load an contact.
+
+In your **src/Model/Table/ContactsTable.php**, change::
+
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp');
+        // Change this line
+        $this->belongsToMany('Methods', [
+            'joinTable' => 'contacts_methods',
+            'dependent' => true
+        ]);
+    }
+
+This will tell the Contacts table model that there is a join table associated
+with methods.  The 'dependent' option tells the table to delete any associated
+records from the join table if an contact is deleted.
+
+Lastly, update the findBySlug() method calls in
+**src/Controller/ContactsController.php**::
+
+    public function edit($slug)
+    {
+        // Update this line
+        $contact = $this->Contacts
+            ->findBySlug($slug)
+            ->contain('Methods')
+            ->firstOrFail();
+    ...
+    }
+
+    public function view($slug = null)
+    {
+        // Update this line
+        $contact = $this->Contacts
+            ->findBySlug($slug)
+            ->contain('Methods')
+            ->firstOrFail();
+        $this->set(compact('contact'));
+    }
+
+The ``contain()`` method tells the ``ContactsTable`` object to also populate the
+Methods association when the contact is loaded. Now when method_string is called for
+an Contact entity, there will be data present to create the string!
