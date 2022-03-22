@@ -374,114 +374,113 @@ Now bake the code for main new tables:
 So far it looks like we don't have to bake `contacts_methods`
 because CakePHP's `JOIN` magic sorts them out.
 
-### Adding Tagging to Articles
 
-With multiple users able to access our small :abbr:`CMS` it would be nice to
-have a way to categorize our content. We'll use tags and tagging to allow users
-to create free-form categories and labels for their content. Again, we'll use
-``bake`` to quickly generate some skeleton code for our application:
+### Adding Methods to Contacts
 
-.. code-block:: console
+According to this app, we contact Contacts via Methods.
+e.g. I contact my brother via email.
 
-    # Generate all the code at once.
-    bin/cake bake all tags
+* my brother is the contact
+* email is the method
 
-Once you have the scaffold code created, create a few sample tags by going to
-**http://localhost:8765/tags/add**.
+Now that we have the scaffold code created, create a few sample
+methods at `example.com/methods/add`
 
-Now that we have a Tags table, we can create an association between Articles and
-Tags. We can do so by adding the following to the ``initialize`` method on the
-``ArticlesTable``::
+Now that we have a methods table, we can create an association between
+Contacts and Methods. We can do so by adding the following to the
+`initialize` method on the `Contacts` Table
 
     public function initialize(array $config): void
     {
         $this->addBehavior('Timestamp');
-        $this->belongsToMany('Tags'); // Add this line
+        $this->belongsToMany('Methods'); // Add this line
     }
 
-This association will work with this simple definition because we followed
-CakePHP conventions when creating our tables. For more information, read
-:doc:`/orm/associations`.
+This association will work with this simple definition because we
+followed CakePHP conventions when creating our tables. For more
+information, read https://book.cakephp.org/4/en/orm/associations.html
 
-Updating Articles to Enable Tagging
-===================================
+### Updating Contacts to Enable Methods
 
-Now that our application has tags, we need to enable users to tag their
-articles. First, update the ``add`` action to look like::
+
+Now that our application has methods, we need to enable users to
+method their contacts. First, update the `add` action to look like:
 
     <?php
-    // in src/Controller/ArticlesController.php
+    // in src/Controller/ContactsController.php
     namespace App\Controller;
 
     use App\Controller\AppController;
 
-    class ArticlesController extends AppController
+    class ContactsController extends AppController
     {
         public function add()
         {
-            $article = $this->Articles->newEmptyEntity();
+            $contact = $this->Contacts->newEmptyEntity();
             if ($this->request->is('post')) {
-                $article = $this->Articles->patchEntity($article, $this->request->getData());
+                $contact = $this->Contacts->patchEntity($contact, $this->request->getData());
 
                 // Hardcoding the user_id is temporary, and will be removed later
                 // when we build authentication out.
-                $article->user_id = 1;
+                $contact->user_id = 1;
 
-                if ($this->Articles->save($article)) {
-                    $this->Flash->success(__('Your article has been saved.'));
+                if ($this->Contacts->save($contact)) {
+                    $this->Flash->success(__('Your contact has been saved.'));
                     return $this->redirect(['action' => 'index']);
                 }
-                $this->Flash->error(__('Unable to add your article.'));
+                $this->Flash->error(__('Unable to add your contact.'));
             }
-            // Get a list of tags.
-            $tags = $this->Articles->Tags->find('list')->all();
+            // Get a list of methods.
+            $methods = $this->Contacts->Methods->find('list')->all();
 
-            // Set tags to the view context
-            $this->set('tags', $tags);
+            // Set methods to the view context
+            $this->set('methods', $methods);
 
-            $this->set('article', $article);
+            $this->set('contact', $contact);
         }
 
         // Other actions
     }
 
-The added lines load a list of tags as an associative array of ``id => title``.
-This format will let us create a new tag input in our template.
-Add the following to the PHP block of controls in **templates/Articles/add.php**::
+The added lines load a list of methods as an associative array of `id
+=> title`.  This format will let us create a new method input in our
+template.  Add the following to the PHP block of controls in
+**templates/Contacts/add.php**:
 
-    echo $this->Form->control('tags._ids', ['options' => $tags]);
+    echo $this->Form->control('methods._ids', ['options' => $methods]);
 
-This will render a multiple select element that uses the ``$tags`` variable to
-generate the select box options. You should now create a couple new articles
-that have tags, as in the following section we'll be adding the ability to find
-articles by tags.
+This will render a multiple select element that uses the `$methods`
+variable to generate the select box options. You should now create a
+couple new contacts that have methods, as in the following section
+we'll be adding the ability to find contacts by methods.
 
-You should also update the ``edit`` method to allow adding or editing tags. The
-edit method should now look like::
+You should also update the `edit` method to allow adding or editing
+methods. The edit method should now look like:
 
     public function edit($slug)
     {
-        $article = $this->Articles
+        $contact = $this->Contacts
             ->findBySlug($slug)
-            ->contain('Tags') // load associated Tags
+            ->contain('Methods') // load associated methods
             ->firstOrFail();
         if ($this->request->is(['post', 'put'])) {
-            $this->Articles->patchEntity($article, $this->request->getData());
-            if ($this->Articles->save($article)) {
-                $this->Flash->success(__('Your article has been updated.'));
+            $this->Contacts->patchEntity($contact, $this->request->getData());
+            if ($this->Contacts->save($contact)) {
+                $this->Flash->success(__('Your contact has been updated.'));
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('Unable to update your article.'));
+            $this->Flash->error(__('Unable to update your contact.'));
         }
 
-        // Get a list of tags.
-        $tags = $this->Articles->Tags->find('list')->all();
+        // Get a list of methods.
+        $methods = $this->Contacts->Methods->find('list')->all();
 
-        // Set tags to the view context
-        $this->set('tags', $tags);
+        // Set methods to the view context
+        $this->set('methods', $methods);
 
-        $this->set('article', $article);
+        $this->set('contact', $contact);
     }
 
-Remember to add the new tags multiple select control we added to the **add.php**
-template to the **templates/Articles/edit.php** template as well.
+Remember to add the new methods multiple select control we added to
+the **add.php** template to the **templates/Contacts/edit.php**
+template as well.
