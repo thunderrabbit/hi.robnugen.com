@@ -3,7 +3,7 @@ Contacts and Methods for a simple CRM
 Don't touch it until this README looks reasonable.
 
 
-###Overview
+### Overview
 
 Does not track the content of communication
 
@@ -16,8 +16,8 @@ Does not even recall the history of communications
 * no private data!  data could be doxxed and must have no ill effect on anyone
 * NO LAST NAMES
 * NO CONTACT INFO beyond "FB" "LINE" "Whatsapp"
-** and I do mean just the name of the social network
-** not the username or anything
+* * and I do mean just the name of the social network
+* * not the username or anything
 * if I cannot find them from above, then they aren't close enough to be contacted
 * private info stays safely in my physical space or with 3rd party social network
 
@@ -331,6 +331,7 @@ From the tutorial I'm using
 * TABLE `tags` corresponds to TABLE `methods`
 * TABLE `articles_tags` corresponds to TABLE `contacts_methods`
 
+
     CREATE TABLE contacts (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -359,6 +360,7 @@ From the tutorial I'm using
         FOREIGN KEY contact_key(contact_id) REFERENCES contacts(id)
     );
 
+
 Now bake the code for main new tables:
 
     cd /path/to/our/app
@@ -366,3 +368,5 @@ Now bake the code for main new tables:
     bin/cake bake all contacts
     bin/cake bake all methods
 
+So far it looks like we don't have to bake `contacts_methods`
+because CakePHP's `JOIN` magic sorts them out.
