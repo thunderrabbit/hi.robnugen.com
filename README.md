@@ -446,12 +446,12 @@ The added lines load a list of methods as an associative array of `id
 => title`.  This format will let us create a new method input in our
 template.
 
-You should now create a
+If you haven't already, now create a
 couple new contacts that have methods, as in the following section
 we'll be adding the ability to find contacts by methods.
 
-You should also update the `edit` method to allow adding or editing
-methods. The edit method should now look like:
+You should also update the `edit` method (function) to allow adding or editing
+(contact) methods. The edit method (function) should now look like:
 
     public function edit($slug)
     {
