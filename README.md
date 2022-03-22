@@ -115,7 +115,7 @@ Then add the following::
             // ... other middleware added before
             ->add(new RoutingMiddleware($this))
             // add Authentication after RoutingMiddleware
-            ->add(new AuthenticationMiddleware($this));
+            ->add(new AuthenticationMiddleware($this))
 
         return $middlewareQueue;
     }
