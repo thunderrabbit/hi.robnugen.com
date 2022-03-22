@@ -22,6 +22,11 @@ class UsersController extends AppController
         // Configure the login action to not require authentication, preventing
         // the infinite redirect loop issue
         $this->Authentication->addUnauthenticatedActions(['login']);
+	/* Enable 'add' iff I want random people to be able to register.
+	   I only plan to allow me to register if database was wiped.
+	   Possibly later allow friends or paying customers.
+	*/
+        // $this->Authentication->addUnauthenticatedActions(['add']);
     }
 
     /**
