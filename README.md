@@ -339,3 +339,11 @@ From the tutorial I'm using
         FOREIGN KEY method_key(method_id) REFERENCES methods(id),
         FOREIGN KEY contact_key(contact_id) REFERENCES contacts(id)
     );
+
+Now bake the code for main new tables:
+
+    cd /path/to/our/app
+
+    bin/cake bake all contacts
+    bin/cake bake all methods
+
