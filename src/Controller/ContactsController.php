@@ -52,6 +52,11 @@ class ContactsController extends AppController
         $contact = $this->Contacts->newEmptyEntity();
         if ($this->request->is('post')) {
             $contact = $this->Contacts->patchEntity($contact, $this->request->getData());
+
+            // Hardcoding the user_id is temporary, and will be removed later
+            // when we build authentication out.
+            $contact->user_id = 1;
+
             if ($this->Contacts->save($contact)) {
                 $this->Flash->success(__('The contact has been saved.'));
 

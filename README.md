@@ -388,7 +388,7 @@ methods at `example.com/methods/add`
 
 Now that we have a methods table, we can create an association between
 Contacts and Methods. We can do so by adding the following to the
-`initialize` method on the `Contacts` Table
+`initialize` method on the ContactsTable at `/src/Model/Table/ContactsTable.php`
 
     public function initialize(array $config): void
     {
@@ -403,8 +403,8 @@ information, read https://book.cakephp.org/4/en/orm/associations.html
 ### Updating Contacts to Enable Methods
 
 
-Now that our application has methods, we need to enable users to
-method their contacts. First, update the `add` action to look like:
+Now that our application has methods, we need to enable users to add
+methods to their contacts. First, update the `add` action to look like:
 
     <?php
     // in src/Controller/ContactsController.php

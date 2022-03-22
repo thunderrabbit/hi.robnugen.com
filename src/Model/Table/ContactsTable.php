@@ -47,6 +47,7 @@ class ContactsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->belongsToMany('Methods');  // Create association between Contacts and Methods
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
